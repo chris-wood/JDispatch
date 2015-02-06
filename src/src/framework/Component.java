@@ -44,11 +44,11 @@ public abstract class Component {
 	}
 	
 	public void addOutputQueue(String queueIdentity) throws Exception {
-		addOutputQueue(new EventQueue(this, queueIdentity));
+		addOutputQueue(new EventQueue(this, null, queueIdentity));
 	}
 	
 	public void addInputQueue(String queueIdentity) throws Exception {
-		addInputQueue(new EventQueue(this, queueIdentity));
+		addInputQueue(new EventQueue(null, this, queueIdentity));
 	}
 	
 	private void addOutputQueue(EventQueue queue) throws Exception {
