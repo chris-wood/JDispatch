@@ -1,13 +1,11 @@
 package dispatcher;
 
-public class Clock
-{
+public class Clock {
 	public static long time;
 	public static long endTime;
 	public boolean tick = true;
 	
-	public static void initialize(long endTime)
-	{
+	public static void initialize(long endTime) {
 		time = 0L;
 		endTime = 0L;
 	}
@@ -16,8 +14,7 @@ public class Clock
 		return (time < endTime);
 	}
 	
-	public static void tick()
-	{
+	public static void tick() {
 		time++;
 	}
 }

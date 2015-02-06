@@ -3,8 +3,6 @@ package framework;
 import java.util.HashMap;
 import java.util.Map;
 
-import dispatcher.Clock;
-
 public abstract class Component {
 	
 	protected String identity;

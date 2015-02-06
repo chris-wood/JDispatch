@@ -1,4 +1,4 @@
-package JEventUtil;
+package util;
 
 import dispatcher.Clock;
 
