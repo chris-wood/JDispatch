@@ -3,6 +3,7 @@ package dispatcher;
 import java.util.ArrayList;
 import java.util.List;
 
+import math.Distribution;
 import framework.Component;
 import framework.Event;
 
@@ -26,7 +27,12 @@ public class Dispatcher extends Thread {
 		return bucket;
 	}
 	
-	public void scheduleEventPacket(long targetTime, EventPacket packet) {
+	public void scheduleProbabilisticEventPacket(long currentTime, Distribution distribution, EventPacket packet) {
+		long targetTime = currentTime + distribution.sample();
+		scheduleDeterministicEventPacket(targetTime, packet);
+	}
+	
+	public void scheduleDeterministicEventPacket(long targetTime, EventPacket packet) {
 		boolean bucketMissing = true;
 		for (TimeBucket bucket : timeBuckets) {
 			long bucketTime = bucket.getEventTime();
