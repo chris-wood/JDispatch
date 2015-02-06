@@ -16,9 +16,13 @@ public abstract class Component {
 		outputQueues = new HashMap<String, EventQueue>();
 	}
 	
-	public abstract void processInputEvent(Event event);
+	public String getIdentity() {
+		return identity;
+	}
+	
+	protected abstract void processInputEvent(Event event);
 	 
-	public abstract void cycle(long currentTime);
+	protected abstract void cycle(long currentTime);
 
 	public final void processOutputQueueEvents(long currentTime) {
 		cycle(currentTime);
@@ -39,39 +43,63 @@ public abstract class Component {
 		component.addInputQueue(queue);
 	}
 	
-	public String getIdentity() {
-		return identity;
+	public void addOutputQueue(String queueIdentity) throws Exception {
+		addOutputQueue(new EventQueue(this, queueIdentity));
 	}
 	
-	public void addOutputQueue(EventQueue queue) throws Exception {
+	public void addInputQueue(String queueIdentity) throws Exception {
+		addInputQueue(new EventQueue(this, queueIdentity));
+	}
+	
+	private void addOutputQueue(EventQueue queue) throws Exception {
 		if (outputQueues.containsKey(queue.getIdentity())) {
 			throw new Exception("Output queue already exists");
 		}
 		outputQueues.put(queue.getIdentity(), queue);
 	}
 	
-	public void addInputQueue(EventQueue queue) throws Exception {
+	private void addInputQueue(EventQueue queue) throws Exception {
 		if (inputQueues.containsKey(queue.getIdentity())) {
 			throw new Exception("Input queue already exists");
 		}
 		inputQueues.put(queue.getIdentity(), queue);
 	}
 	
-	public void sendMessage(String queueKey, Message msg) {
-		if (!outputQueues.containsKey(queueKey)) {
-			System.err.println("Error: " + this.identity + " output queue key: " + queueKey + " not found");
-		} else {
-			System.out.println(identity + " is sending message " + msg.toString());
-			outputQueues.get(queueKey).enqueue(msg);
-		}
+	public boolean sendMessage(String queueKey, Message msg) {
+		return sendEvent(queueKey, msg);
 	}
 	
-	public void sendCommand(String queueKey, Command cmd) {
+	public boolean sendCommand(String queueKey, Command cmd) {
+		return sendEvent(queueKey, cmd);
+	}
+	
+	public boolean receiveMessage(String queueKey, Message msg) {
+		return receiveEvent(queueKey, msg);
+	}
+	
+	public boolean receiveCommand(String queueKey, Command cmd) {
+		return receiveEvent(queueKey, cmd);
+	}
+	
+	public boolean sendEvent(String queueKey, Event event) {
 		if (!outputQueues.containsKey(queueKey)) {
 			System.err.println("Error: " + this.identity + " output queue key: " + queueKey + " not found");
+			return false;
 		} else {
-			System.out.println(identity + " is sending command " + cmd.toString());
-			outputQueues.get(queueKey).enqueue(cmd);
+			System.out.println(identity + " is sending command " + event.toString());
+			outputQueues.get(queueKey).enqueue(event);
+			return true;
+		}
+	}
+
+	public boolean receiveEvent(String queueKey, Event event) {
+		if (!inputQueues.containsKey(queueKey)) {
+			System.err.println("Error: " + this.identity + " output queue key: " + queueKey + " not found");
+			return false;
+		} else {
+			System.out.println(identity + " is sending command " + event.toString());
+			inputQueues.get(queueKey).enqueue(event);
+			return true;
 		}
 	}
 	

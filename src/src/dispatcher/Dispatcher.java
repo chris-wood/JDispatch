@@ -14,6 +14,7 @@ public class Dispatcher extends Thread {
 	public Dispatcher(List<Component> components) {
 		this.components = new ArrayList<Component>();
 		this.timeBuckets = new ArrayList<TimeBucket>();
+		
 		for (Component component : components) {
 			this.components.add(component);
 		}
@@ -25,8 +26,7 @@ public class Dispatcher extends Thread {
 		return bucket;
 	}
 	
-	public void scheduleEvent(long targetTime, Event event, String targetQueue) {
-		EventPacket packet = new EventPacket(event, targetQueue);
+	public void scheduleEventPacket(long targetTime, EventPacket packet) {
 		boolean bucketMissing = true;
 		for (TimeBucket bucket : timeBuckets) {
 			long bucketTime = bucket.getEventTime();
@@ -45,19 +45,52 @@ public class Dispatcher extends Thread {
 		}
 	}
 	
-	public void cycleComponents() {
-		for (Component component : components) {
-			component.processOutputQueueEvents(Clock.time);
+	private void forwardScheduledEventsInBucket(TimeBucket bucket) {
+		while (bucket.hasNext()) {
+			EventPacket packet = bucket.pop();
+			
+			Event event = packet.getEvent();
+			String destination = packet.getDestination();
+			String queue = packet.getQueue();
+			
+			for (Component component : components) {
+				if (component.getIdentity().equals(destination)) {
+					component.receiveEvent(queue, event);
+					break;
+				}
+			}
 		}
+	}
+	
+	private void processScheduledEvents(long currentTime) {
+		for (TimeBucket bucket : timeBuckets) {
+			if (bucket.getEventTime() < currentTime) {
+				continue;
+			} else if (bucket.getEventTime() == currentTime) {
+				forwardScheduledEventsInBucket(bucket);
+				break;
+			} else {
+				break;
+			}
+		}
+	}
+	
+	public void cycleComponents(long currentTime) {
+		processScheduledEvents(currentTime);
+		
 		for (Component component : components) {
-			component.processInputQueueEvents(Clock.time);
+			component.processOutputQueueEvents(currentTime);
+		}
+		
+		for (Component component : components) {
+			component.processInputQueueEvents(currentTime);
 		}
 	}
 
 	@Override
 	public void run() {
 		while (Clock.isTimeLeft()) {
-			cycleComponents();
+			cycleComponents(Clock.time);
 			Clock.tick();
 		}
 	}

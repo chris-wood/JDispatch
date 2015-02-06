@@ -6,10 +6,12 @@ public class EventPacket {
 	
 	private Event event;
 	private String destination;
+	private String queue;
 	
-	public EventPacket(Event event, String destination) {
+	public EventPacket(Event event, String destination, String queue) {
 		this.event = event;
 		this.destination = destination;
+		this.queue = queue;
 	}
 	
 	public Event getEvent() {
@@ -18,6 +20,10 @@ public class EventPacket {
 	
 	public String getDestination() {
 		return destination;
+	}
+	
+	public String getQueue() {
+		return queue;
 	}
 
 }
