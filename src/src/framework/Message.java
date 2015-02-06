@@ -1,6 +1,6 @@
 package framework;
 
-public class Message {
+public class Message extends Event {
 	
 	protected String description;
 	

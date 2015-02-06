@@ -1,4 +1,6 @@
-package simulation;
+package JEventUtil;
+
+import dispatcher.Clock;
 
 public class Util
 {
