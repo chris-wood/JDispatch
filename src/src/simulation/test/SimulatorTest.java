@@ -56,7 +56,7 @@ public class SimulatorTest {
 		
 		int cycles = 0;
 		int count = 0;
-		int modulus = 5; // not important
+		int modulus = 5;
 
 		public TestComponent(int id) {
 			super("TestComponent-" + id);
