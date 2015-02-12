@@ -1,4 +1,4 @@
-package dispatcher;
+package dispatch;
 
 public class Clock {
 	public static long time;

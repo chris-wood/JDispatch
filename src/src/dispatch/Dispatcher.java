@@ -1,4 +1,4 @@
-package dispatcher;
+package dispatch;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,6 +1,6 @@
 package util;
 
-import dispatcher.Clock;
+import dispatch.Clock;
 
 public class Util
 {
