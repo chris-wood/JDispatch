@@ -57,14 +57,6 @@ public abstract class Component {
 		component.addInputQueue(queue);
 	}
 	
-	public void addOutputQueue(String queueIdentity) throws Exception {
-		addOutputQueue(new EventQueue(this, null, queueIdentity));
-	}
-	
-	public void addInputQueue(String queueIdentity) throws Exception {
-		addInputQueue(new EventQueue(null, this, queueIdentity));
-	}
-	
 	private void addOutputQueue(EventQueue queue) throws Exception {
 		if (outputQueues.containsKey(queue.getIdentity())) {
 			throw new Exception("Output queue already exists");

@@ -23,37 +23,7 @@ public class Dispatcher extends Thread {
 		}
 	}
 	
-	private TimeBucket addNewTimeBucket(long time) {
-		TimeBucket bucket = TimeBucket.createTimeBucket(time);
-		timeBuckets.add(bucket);
-		return bucket;
-	}
-	
-	public void scheduleProbabilisticEventPacket(long currentTime, Distribution distribution, EventPacket packet) {
-		long targetTime = currentTime + distribution.sample();
-		scheduleDeterministicEventPacket(targetTime, packet);
-	}
-	
-	public void scheduleDeterministicEventPacket(long targetTime, EventPacket packet) {
-		boolean bucketMissing = true;
-		for (TimeBucket bucket : timeBuckets) {
-			long bucketTime = bucket.getEventTime();
-			if (bucketTime < targetTime) {
-				continue;
-			} else if (bucketTime == targetTime) {
-				bucket.addEvent(packet);
-				bucketMissing = false;
-			} else {
-				break;
-			}
-		}
-		
-		if (bucketMissing) {
-			addNewTimeBucket(targetTime).addEvent(packet);
-		}
-	}
-	
-	private void forwardScheduledEventsInBucket(TimeBucket bucket) {
+	public void forwardScheduledEventsInBucket(TimeBucket bucket) {
 		while (bucket.hasNext()) {
 			EventPacket packet = bucket.pop();
 			
@@ -104,6 +74,38 @@ public class Dispatcher extends Thread {
 		while (clock.isTimeLeft()) {
 			cycleComponents(clock.getTime());
 			clock.tick();
+		}
+	}
+	
+	class DispatchScheduler {
+		private TimeBucket addNewTimeBucket(long time) {
+			TimeBucket bucket = TimeBucket.createTimeBucket(time);
+			timeBuckets.add(bucket);
+			return bucket;
+		}
+		
+		public void scheduleProbabilisticEventPacket(long currentTime, Distribution distribution, EventPacket packet) {
+			long targetTime = currentTime + distribution.sample();
+			scheduleDeterministicEventPacket(targetTime, packet);
+		}
+		
+		public void scheduleDeterministicEventPacket(long targetTime, EventPacket packet) {
+			boolean bucketMissing = true;
+			for (TimeBucket bucket : timeBuckets) {
+				long bucketTime = bucket.getEventTime();
+				if (bucketTime < targetTime) {
+					continue;
+				} else if (bucketTime == targetTime) {
+					bucket.addEvent(packet);
+					bucketMissing = false;
+				} else {
+					break;
+				}
+			}
+			
+			if (bucketMissing) {
+				addNewTimeBucket(targetTime).addEvent(packet);
+			}
 		}
 	}
 

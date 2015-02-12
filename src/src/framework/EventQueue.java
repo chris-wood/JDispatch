@@ -5,24 +5,12 @@ import java.util.List;
 
 public class EventQueue {
 	
-	protected Component inputComponent;
-	protected Component outputComponent;
 	protected String identity;
 	protected List<Event> queue;
 	
-	public EventQueue(Component inputParent, Component outputParent, String identity) {
-		this.inputComponent = inputParent;
-		this.outputComponent = outputParent;
+	public EventQueue(String identity) {
 		this.identity = identity;
-		queue = new ArrayList<Event>();
-	}
-	
-	public Component getInputComponent() {
-		return inputComponent;
-	}
-	
-	public Component getOutputComponent() {
-		return outputComponent;
+		this.queue = new ArrayList<Event>();
 	}
 	
 	public String getIdentity() {
