@@ -9,10 +9,12 @@ import framework.Event;
 
 public class Dispatcher extends Thread {
 	
+	private Clock clock;
 	private List<Component> components;
 	private List<TimeBucket> timeBuckets;
 	
 	public Dispatcher(long time, List<Component> components) {
+		this.clock = new Clock(time);
 		this.components = new ArrayList<Component>();
 		this.timeBuckets = new ArrayList<TimeBucket>();
 		
@@ -99,9 +101,9 @@ public class Dispatcher extends Thread {
 
 	@Override
 	public void run() {
-		while (Clock.isTimeLeft()) {
-			cycleComponents(Clock.time);
-			Clock.tick();
+		while (clock.isTimeLeft()) {
+			cycleComponents(clock.getTime());
+			clock.tick();
 		}
 	}
 

@@ -1,20 +1,27 @@
 package dispatch;
 
 public class Clock {
-	public static long time;
-	public static long endTime;
-	public boolean tick = true;
+	public long time;
+	public long endTime;
 	
-	public static void initialize(long endTime) {
-		time = 0L;
-		endTime = 0L;
+	public Clock(long endTime) {
+		initialize(endTime);
 	}
 	
-	public static boolean isTimeLeft() {
+	private void initialize(long endTime) {
+		time = 0L;
+		this.endTime = endTime;
+	}
+	
+	public long getTime() {
+		return time;
+	}
+	
+	public boolean isTimeLeft() {
 		return (time < endTime);
 	}
 	
-	public static void tick() {
+	public void tick() {
 		time++;
 	}
 }
