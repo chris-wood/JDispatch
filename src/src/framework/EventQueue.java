@@ -41,6 +41,10 @@ public class EventQueue {
 		queue.add(event);
 	}
 	
+	public void clear() {
+		queue.clear();
+	}
+	
 	public Event dequeue() {
 		Event event = queue.get(0);
 		queue.remove(0);

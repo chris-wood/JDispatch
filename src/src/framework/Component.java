@@ -1,7 +1,9 @@
 package framework;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public abstract class Component {
 	
@@ -31,9 +33,21 @@ public abstract class Component {
 	public final void processInputQueueEvents(long currentTime) {
 		for (String queueKey : inputQueues.keySet()) {
 			EventQueue queue = inputQueues.get(queueKey);
+			
 			System.out.println(identity + " is processing input queue " + queue.toString() + " at time " + currentTime);
+			
+			Set<Event> visitedBroadcastEvents = new HashSet<Event>();
 			while (!queue.isEmpty()) {
-				processInputEvent(queue.dequeue());
+				Event event = queue.dequeue();
+				if (!event.isBroadcastEvent && event.target.equals(identity)) {
+					processInputEvent(event);
+				} else if (event.isBroadcastEvent && !visitedBroadcastEvents.contains(event)) {
+					processInputEvent(event);
+					queue.enqueue(event); 
+					visitedBroadcastEvents.add(event);
+				} else {
+					break; // cycle
+				}
 			}
 		}
 	}
@@ -103,4 +117,9 @@ public abstract class Component {
 		}
 	}
 	
+	public void clearInputQueueEvents() {
+		for (String queueIdentity : inputQueues.keySet()) {
+			inputQueues.get(queueIdentity).clear();
+		}
+	}
 }

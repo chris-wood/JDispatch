@@ -12,7 +12,7 @@ public class Dispatcher extends Thread {
 	private List<Component> components;
 	private List<TimeBucket> timeBuckets;
 	
-	public Dispatcher(List<Component> components) {
+	public Dispatcher(long time, List<Component> components) {
 		this.components = new ArrayList<Component>();
 		this.timeBuckets = new ArrayList<TimeBucket>();
 		
@@ -90,6 +90,10 @@ public class Dispatcher extends Thread {
 		
 		for (Component component : components) {
 			component.processInputQueueEvents(currentTime);
+		}
+		
+		for (Component component : components) {
+			component.clearInputQueueEvents();
 		}
 	}
 

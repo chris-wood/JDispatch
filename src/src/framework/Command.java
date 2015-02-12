@@ -2,7 +2,7 @@ package framework;
 
 public class Command extends Event {
 
-	public Command() {
-		
+	public Command(String target) {
+		super(target);
 	}
 }
