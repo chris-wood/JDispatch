@@ -50,16 +50,16 @@ public class EventQueue {
 		List<Event> stack = new ArrayList<Event>();
 		while (!queue.isEmpty()) {
 			Event event = dequeue();
-			System.out.println("Event dequeued: " + event);
 			if (event.isBroadcastEvent || event.target.equals(target)) {
-				System.out.println("Adding!");
+				if (event.isBroadcastEvent) {
+					stack.add(event);
+				}
 				events.add(event);
 			} else {
 				stack.add(event);
 			}
 		}
 		
-		// Throw old elements into the queue
 		queue.addAll(stack);
 		
 		return events;
