@@ -6,6 +6,7 @@ import java.util.List;
 public class EventQueue {
 	
 	protected String identity;
+	
 	protected List<Event> queue;
 	
 	public EventQueue(String identity) {
@@ -44,4 +45,21 @@ public class EventQueue {
 		return event;
 	}
 
+	public List<Event> dequeueForTarget(String target) {
+		List<Event> events = new ArrayList<Event>();
+		List<Event> stack = new ArrayList<Event>();
+		while (!queue.isEmpty()) {
+			Event event = dequeue();
+			if (event.isBroadcastEvent || event.target.equals(target)) {
+				events.add(event);
+			} else {
+				stack.add(event);
+			}
+		}
+		
+		// Throw old elements into the queue
+		queue.addAll(stack);
+		
+		return events;
+	}
 }

@@ -1,9 +1,8 @@
 package framework;
 
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public abstract class Component {
 	
@@ -33,38 +32,27 @@ public abstract class Component {
 	public final void processInputQueueEvents(long currentTime) {
 		for (String queueKey : inputQueues.keySet()) {
 			EventQueue queue = inputQueues.get(queueKey);
-			
 			System.out.println(identity + " is processing input queue " + queue.toString() + " at time " + currentTime);
-			
-			Set<Event> visitedBroadcastEvents = new HashSet<Event>();
-			while (!queue.isEmpty()) {
-				Event event = queue.dequeue();
-				if (!event.isBroadcastEvent && event.target.equals(identity)) {
-					processInputEvent(event);
-				} else if (event.isBroadcastEvent && !visitedBroadcastEvents.contains(event)) {
-					processInputEvent(event);
-					queue.enqueue(event); 
-					visitedBroadcastEvents.add(event);
-				} else {
-					break; // cycle
-				}
+			List<Event> events = queue.dequeueForTarget(identity);
+			for (Event event : events) {
+				processInputEvent(event);
 			}
 		}
 	}
 	
-	public void connect(Component component, EventQueue queue) throws Exception {
-		addOutputQueue(queue);
-		component.addInputQueue(queue);
+	public void addDuplexQueue(String interfaceId, EventQueue queue) throws Exception {
+		addInputQueue(interfaceId, queue);
+		addOutputQueue(interfaceId, queue);
 	}
 	
-	private void addOutputQueue(EventQueue queue) throws Exception {
+	public void addOutputQueue(String interfaceId, EventQueue queue) throws Exception {
 		if (outputQueues.containsKey(queue.getIdentity())) {
 			throw new Exception("Output queue already exists");
 		}
 		outputQueues.put(queue.getIdentity(), queue);
 	}
 	
-	private void addInputQueue(EventQueue queue) throws Exception {
+	public void addInputQueue(String interfaceId, EventQueue queue) throws Exception {
 		if (inputQueues.containsKey(queue.getIdentity())) {
 			throw new Exception("Input queue already exists");
 		}
