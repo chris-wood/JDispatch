@@ -32,9 +32,9 @@ public abstract class Component {
 	public final void processInputQueueEvents(long currentTime) {
 		for (String queueKey : inputQueues.keySet()) {
 			EventQueue queue = inputQueues.get(queueKey);
-			System.out.println(identity + " is processing input queue " + queue.toString() + " at time " + currentTime);
 			List<Event> events = queue.dequeueForTarget(identity);
 			for (Event event : events) {
+				System.out.println(identity + " is processing input event " + event);
 				processInputEvent(event);
 			}
 		}
@@ -49,14 +49,14 @@ public abstract class Component {
 		if (outputQueues.containsKey(queue.getIdentity())) {
 			throw new Exception("Output queue already exists");
 		}
-		outputQueues.put(queue.getIdentity(), queue);
+		outputQueues.put(interfaceId, queue);
 	}
 	
 	public void addInputQueue(String interfaceId, EventQueue queue) throws Exception {
 		if (inputQueues.containsKey(queue.getIdentity())) {
 			throw new Exception("Input queue already exists");
 		}
-		inputQueues.put(queue.getIdentity(), queue);
+		inputQueues.put(interfaceId, queue);
 	}
 	
 	public boolean sendMessage(String queueKey, Message msg) {

@@ -5,6 +5,11 @@ public class Event {
 	protected String target;
 	protected boolean isBroadcastEvent;
 	
+	public Event() {
+		this.target = "";
+		this.isBroadcastEvent = true;
+	}
+	
 	public Event(String target) {
 		this.target = target;
 		this.isBroadcastEvent = false;
@@ -12,7 +17,7 @@ public class Event {
 	
 	@Override
 	public String toString() {
-		return this.toString();
+		return "";
 	}
 
 }
