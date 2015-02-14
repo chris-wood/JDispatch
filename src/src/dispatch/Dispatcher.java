@@ -7,7 +7,7 @@ import framework.Component;
 import framework.Event;
 import framework.Channel;
 
-public class Dispatcher extends Thread {
+public class Dispatcher {
 	
 	private Clock clock;
 	private List<Component> components;
@@ -74,7 +74,6 @@ public class Dispatcher extends Thread {
 		scheduler.scheduleDeterministicEventPacket(clock.getTime() + 1, new EventPacket(event, destination, queueId));
 	}
 	
-	@Override
 	public void run() {
 		while (clock.isTimeLeft()) {
 			cycleComponents(clock.getTime());
