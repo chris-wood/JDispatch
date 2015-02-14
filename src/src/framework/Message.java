@@ -4,9 +4,8 @@ public class Message extends Event {
 	
 	protected String description;
 	
-	public Message(String target, String msg) {
-		super(target);
-		description = msg;
+	public Message(String msg) {
+		this.description = msg;
 	}
 	
 	public String getDescription() {
