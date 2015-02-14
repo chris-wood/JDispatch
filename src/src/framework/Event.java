@@ -5,9 +5,19 @@ import java.util.UUID;
 public class Event {
 	
 	protected UUID uuid;
+	protected boolean processed;
 	
 	public Event() {
-		uuid = java.util.UUID.randomUUID();
+		this.uuid = java.util.UUID.randomUUID();
+		this.processed = false;
+	}
+	
+	public void setProcessed() {
+		processed = true;
+	}
+	
+	public boolean isProcessed() {
+		return processed;
 	}
 	
 	@Override

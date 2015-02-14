@@ -1,5 +1,6 @@
 package dispatch;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TimeBucket {
@@ -9,6 +10,7 @@ public class TimeBucket {
 	
 	private TimeBucket(long time) {
 		eventTime = time;
+		this.events = new ArrayList<EventPacket>();
 	}
 	
 	public static TimeBucket createTimeBucket(long time) {

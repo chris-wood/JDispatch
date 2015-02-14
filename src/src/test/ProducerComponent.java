@@ -1,7 +1,5 @@
 package test;
 
-import math.Distribution;
-import math.UniformDistribution;
 import dispatch.Dispatcher;
 import framework.Component;
 import framework.Event;
@@ -14,6 +12,8 @@ class ProducerComponent extends Component {
 
 	@Override
 	protected void processInputEvent(Event event, long time) {
+		System.out.println("Producer " + identity + " received " + event + " at time " + time);
+		event.setProcessed();
 	}
 
 	@Override

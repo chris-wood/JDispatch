@@ -11,14 +11,12 @@ public class Dispatcher extends Thread {
 	
 	private Clock clock;
 	private List<Component> components;
-//	private List<Channel> eventQueues;
 	private List<TimeBucket> timeBuckets;
 	private Scheduler scheduler;
 	
 	public Dispatcher(long time) {
 		this.clock = new Clock(time);
 		this.components = new ArrayList<Component>();
-//		this.eventQueues = new ArrayList<Channel>();
 		this.timeBuckets = new ArrayList<TimeBucket>();
 		this.scheduler = new Scheduler(this);
 	}
@@ -26,10 +24,6 @@ public class Dispatcher extends Thread {
 	public void addComponent(Component component) {
 		components.add(component);
 	}
-	
-//	public void addEventQueue(Channel queue) {
-//		eventQueues.add(queue);
-//	}
 	
 	public void forwardScheduledEventsInBucket(TimeBucket bucket) {
 		while (bucket.hasNext()) {
@@ -68,12 +62,6 @@ public class Dispatcher extends Thread {
 		}
 	}
 	
-//	public void cycleQueues(long currentTime) {
-//		for (Channel queue : eventQueues) {
-//			queue.cycle();
-//		}
-//	}
-	
 	public void addTimeBucket(TimeBucket bucket) {
 		timeBuckets.add(bucket);
 	}
@@ -82,11 +70,14 @@ public class Dispatcher extends Thread {
 		return timeBuckets;
 	}
 	
+	public void scheduleEventForNextEpoch(Event event, String destination, String queueId) {
+		scheduler.scheduleDeterministicEventPacket(clock.getTime() + 1, new EventPacket(event, destination, queueId));
+	}
+	
 	@Override
 	public void run() {
 		while (clock.isTimeLeft()) {
 			cycleComponents(clock.getTime());
-//			cycleQueues(clock.getTime());
 			clock.tick();
 		}
 	}

@@ -12,12 +12,15 @@ class ConsumerComponent extends Component {
 	
 	@Override
 	protected void runComponent(long time) {
-		// TODO Auto-generated method stub
+		Event event = new Event();
+		System.out.println("Consumer " + identity + " is sending the event " + event + " at time " + time);	
+		broadcastEvent(event);
 	}
 
 	@Override
 	protected void processInputEvent(Event event, long time) {
 		System.out.println("Consumer " + identity + " received " + event + " at time " + time);
+		event.setProcessed();
 	}
 	
 }
