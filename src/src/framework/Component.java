@@ -15,14 +15,32 @@ public abstract class Component {
 	protected Map<String, Channel> channelInterfaces;
 	private final static Logger LOGGER = Logger.getLogger(Component.class.getName());
 	
+	public Component(String identity) {
+		this.identity = identity;
+		this.channelInterfaces = new HashMap<String, Channel>();
+	}
+	
 	public Component(String identity, Dispatcher dispatcher) {
 		this.identity = identity;
 		this.channelInterfaces = new HashMap<String, Channel>();
+		setDispatcher(dispatcher);
+	}
+	
+	public void setDispatcher(Dispatcher dispatcher) {
 		this.dispatcher = dispatcher;
+		dispatcher.addComponent(this);
 	}
 	
 	public String getIdentity() {
 		return identity;
+	}
+	
+	public Channel getChannelByName(String name) {
+		if (channelInterfaces.containsKey(name)) {
+			return channelInterfaces.get(name);
+		} else {
+			return null;
+		}
 	}
 	
 	protected void processInputEvents(long time) {

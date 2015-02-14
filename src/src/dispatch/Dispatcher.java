@@ -5,7 +5,6 @@ import java.util.List;
 
 import framework.Component;
 import framework.Event;
-import framework.Channel;
 
 public class Dispatcher {
 	

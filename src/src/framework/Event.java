@@ -12,6 +12,13 @@ public class Event {
 		this.processed = false;
 	}
 	
+	public Event copy() {
+		Event event = new Event();
+		event.uuid = uuid;
+		event.processed = false;
+		return event;
+	}
+	
 	public void setProcessed() {
 		processed = true;
 	}
