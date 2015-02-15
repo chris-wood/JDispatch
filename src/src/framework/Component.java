@@ -46,11 +46,11 @@ public abstract class Component {
 	protected void processInputEvents(long time) {
 		for (String queueKey : channelInterfaces.keySet()) {
 			Stream<Event> eventStream = channelInterfaces.get(queueKey).getInputStream();
-			eventStream.forEach(e -> processInputEvent(e, time));
+			eventStream.forEach(e -> processInputEventFromInterface(queueKey, e, time));
 		}
 	}
 	
-	protected abstract void processInputEvent(Event event, long time);
+	protected abstract void processInputEventFromInterface(String interfaceId, Event event, long time);
 	protected abstract void runComponent(long time);
 	
 	public void cycle(long currentTime) {
@@ -65,12 +65,12 @@ public abstract class Component {
 	public boolean broadcastEvent(Event event) {
 		boolean result = true;
 		for (String channelId : channelInterfaces.keySet()) {
-			result = result && sendEvent(channelId, event);
+			result = result && send(channelId, event);
 		}
 		return result;
 	}
 	
-	public boolean sendEvent(String queueKey, Event event) {
+	public boolean send(String queueKey, Event event) {
 		if (!channelInterfaces.containsKey(queueKey)) {
 			LOGGER.log(Level.WARNING, "Error: " + this.identity + " output queue key: " + queueKey + " not found");
 			return false;

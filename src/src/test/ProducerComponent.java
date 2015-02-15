@@ -11,7 +11,7 @@ class ProducerComponent extends Component {
 	}
 
 	@Override
-	protected void processInputEvent(Event event, long time) {
+	protected void processInputEventFromInterface(String interfaceId, Event event, long time) {
 		System.out.println("Producer " + identity + " received " + event + " at time " + time);
 		event.setProcessed();
 	}
