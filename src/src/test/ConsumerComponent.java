@@ -14,7 +14,7 @@ class ConsumerComponent extends Component {
 	protected void runComponent(long time) {
 		Event event = new Event();
 		System.out.println("Consumer " + identity + " is sending the event " + event + " at time " + time);	
-		broadcastEvent(event);
+		broadcast(event);
 	}
 
 	@Override

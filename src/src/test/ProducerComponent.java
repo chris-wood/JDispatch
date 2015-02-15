@@ -20,7 +20,7 @@ class ProducerComponent extends Component {
 	protected void runComponent(long time) {
 		Event event = new Event();
 		System.out.println("Producer " + identity + " is sending the event " + event + " at time " + time);	
-		broadcastEvent(event);
+		broadcast(event);
 	}
 	
 }

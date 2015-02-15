@@ -62,7 +62,7 @@ public abstract class Component {
 		channelInterfaces.put(interfaceId, channelInterface);
 	}
 	
-	public boolean broadcastEvent(Event event) {
+	public boolean broadcast(Event event) {
 		boolean result = true;
 		for (String channelId : channelInterfaces.keySet()) {
 			result = result && send(channelId, event);
