@@ -70,6 +70,16 @@ public abstract class Component {
 		return result;
 	}
 	
+	public boolean broadcast(Event event, String arrivalInterface) {
+		boolean result = true;
+		for (String channelId : channelInterfaces.keySet()) {
+			if (!channelId.equals(arrivalInterface)) {
+				result = result && send(channelId, event);
+			}
+		}
+		return result;
+	}
+	
 	public boolean send(String queueKey, Event event) {
 		if (!channelInterfaces.containsKey(queueKey)) {
 			LOGGER.log(Level.WARNING, "Error: " + this.identity + " output queue key: " + queueKey + " not found");
