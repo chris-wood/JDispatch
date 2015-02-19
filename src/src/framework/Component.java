@@ -10,20 +10,25 @@ import dispatch.Dispatcher;
 
 public abstract class Component {
 	
+	private int sleepTimer;
 	protected String identity;
 	protected Dispatcher dispatcher;
 	protected Map<String, Channel> channelInterfaces;
 	private final static Logger LOGGER = Logger.getLogger(Component.class.getName());
 	
-	public Component(String identity) {
-		this.identity = identity;
-		this.channelInterfaces = new HashMap<String, Channel>();
+	public Component(String componentIdentity) {
+		initialize(componentIdentity);
 	}
 	
-	public Component(String identity, Dispatcher dispatcher) {
-		this.identity = identity;
-		this.channelInterfaces = new HashMap<String, Channel>();
+	public Component(String componentIdentity, Dispatcher dispatcher) {
+		initialize(componentIdentity);
 		setDispatcher(dispatcher);
+	}
+	
+	private void initialize(String componentIdentity) {
+		identity = componentIdentity;
+		channelInterfaces = new HashMap<String, Channel>();
+		sleepTimer = 0;
 	}
 	
 	public void setDispatcher(Dispatcher dispatcher) {
@@ -55,7 +60,16 @@ public abstract class Component {
 	
 	public void cycle(long currentTime) {
 		processInputEvents(currentTime);
-		runComponent(currentTime);		
+		
+		if (sleepTimer == 0) {
+			runComponent(currentTime);
+		} else {
+			sleepTimer--;
+		}
+	}
+	
+	public void yield(int time) {
+		sleepTimer += time;
 	}
 	
 	public void addChannelInterface(String interfaceId, Channel channelInterface) {
