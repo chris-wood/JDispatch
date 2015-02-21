@@ -77,6 +77,7 @@ public class Dispatcher {
 		while (clock.isTimeLeft()) {
 			cycleComponents(clock.getTime());
 			clock.tick();
+			System.out.println();
 		}
 	}
 }
