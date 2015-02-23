@@ -73,11 +73,15 @@ public class Dispatcher {
 		scheduler.scheduleDeterministicEventPacket(clock.getTime() + 1, new EventPacket(event, destination, queueId));
 	}
 	
+	public void beginEpoch() {
+		// empty
+	}
+	
 	public void run() {
 		while (clock.isTimeLeft()) {
+			beginEpoch();
 			cycleComponents(clock.getTime());
 			clock.tick();
-			System.out.println();
 		}
 	}
 }
