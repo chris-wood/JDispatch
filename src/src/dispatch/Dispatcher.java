@@ -3,28 +3,39 @@ package dispatch;
 import java.util.ArrayList;
 import java.util.List;
 
+import framework.Channel;
 import framework.Component;
 import framework.Event;
 
 public class Dispatcher {
 	
 	private Clock clock;
+	private List<Channel> channels;
 	private List<Component> components;
-	private List<TimeBucket> timeBuckets;
+	private List<TimeBucket<EventPacket>> timeBuckets;
 	private Scheduler scheduler;
 	
 	public Dispatcher(long time) {
 		this.clock = new Clock(time);
+		this.channels = new ArrayList<Channel>();
 		this.components = new ArrayList<Component>();
-		this.timeBuckets = new ArrayList<TimeBucket>();
+		this.timeBuckets = new ArrayList<TimeBucket<EventPacket>>();
 		this.scheduler = new Scheduler(this);
 	}
 	
 	public void addComponent(Component component) {
-		components.add(component);
+		if (!components.contains(component)) {
+			components.add(component);
+		}
 	}
 	
-	public void forwardScheduledEventsInBucket(TimeBucket bucket) {
+	public void addChannel(Channel channel) {
+		if (!channels.contains(channel)) {
+			channels.add(channel);
+		}
+	}
+	
+	public void forwardScheduledEventsInBucket(TimeBucket<EventPacket> bucket) {
 		while (bucket.hasNext()) {
 			EventPacket packet = bucket.pop();
 			
@@ -42,7 +53,7 @@ public class Dispatcher {
 	}
 	
 	private void processScheduledEvents(long currentTime) {
-		for (TimeBucket bucket : timeBuckets) {
+		for (TimeBucket<EventPacket> bucket : timeBuckets) {
 			if (bucket.getEventTime() < currentTime) {
 				continue;
 			} else if (bucket.getEventTime() == currentTime) {
@@ -61,11 +72,17 @@ public class Dispatcher {
 		}
 	}
 	
-	public void addTimeBucket(TimeBucket bucket) {
+	public void cycleChannels(long currentTime) {
+		for (Channel channel : channels) {
+			channel.cycle(currentTime);
+		}
+	}
+	
+	public void addTimeBucket(TimeBucket<EventPacket> bucket) {
 		timeBuckets.add(bucket);
 	}
 	
-	public List<TimeBucket> getTimeBuckets() {
+	public List<TimeBucket<EventPacket>> getTimeBuckets() {
 		return timeBuckets;
 	}
 	
@@ -81,6 +98,7 @@ public class Dispatcher {
 		while (clock.isTimeLeft()) {
 			beginEpoch();
 			cycleComponents(clock.getTime());
+			cycleChannels(clock.getTime());
 			clock.tick();
 		}
 	}

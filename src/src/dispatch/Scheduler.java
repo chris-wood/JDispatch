@@ -10,8 +10,8 @@ public class Scheduler {
 		this.dispatcher = dispatcher;
 	}
 
-	private TimeBucket addNewTimeBucket(long time) {
-		TimeBucket bucket = TimeBucket.createTimeBucket(time);
+	private TimeBucket<EventPacket> addNewTimeBucket(long time) {
+		TimeBucket<EventPacket> bucket = new TimeBucket<EventPacket>(time);
 		dispatcher.addTimeBucket(bucket);
 		return bucket;
 	}

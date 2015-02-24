@@ -3,22 +3,17 @@ package dispatch;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TimeBucket {
+public class TimeBucket<T> {
 
 	private long eventTime;
-	private List<EventPacket> events;
+	private List<T> events;
 	
-	private TimeBucket(long time) {
+	public TimeBucket(long time) {
 		eventTime = time;
-		this.events = new ArrayList<EventPacket>();
+		this.events = new ArrayList<T>();
 	}
 	
-	public static TimeBucket createTimeBucket(long time) {
-		TimeBucket bucket = new TimeBucket(time);
-		return bucket;
-	}
-	
-	public void addEvent(EventPacket packet) {
+	public void addEvent(T packet) {
 		events.add(packet);
 	}
 	
@@ -30,13 +25,13 @@ public class TimeBucket {
 		return !events.isEmpty();
 	}
 	
-	public EventPacket pop() {
-		EventPacket packet = events.get(0);
+	public T pop() {
+		T packet = events.get(0);
 		events.remove(0);
 		return packet;
 	}
 	
-	public EventPacket next() {
+	public T next() {
 		return events.get(0);
 	}
 	
