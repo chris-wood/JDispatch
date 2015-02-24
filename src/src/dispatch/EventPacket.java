@@ -1,6 +1,5 @@
 package dispatch;
 
-import framework.Event;
 
 public class EventPacket {
 	

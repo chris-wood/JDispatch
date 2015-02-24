@@ -1,5 +1,8 @@
-package dispatch;
+package dispatch.scheduler;
 
+import dispatch.Dispatcher;
+import dispatch.EventPacket;
+import dispatch.TimeBucket;
 import math.Distribution;
 
 public class Scheduler {
@@ -23,7 +26,7 @@ public class Scheduler {
 	
 	public void scheduleDeterministicEventPacket(long targetTime, EventPacket packet) {
 		boolean bucketMissing = true;
-		for (TimeBucket bucket : dispatcher.getTimeBuckets()) {
+		for (TimeBucket<EventPacket> bucket : dispatcher.getTimeBuckets()) {
 			long bucketTime = bucket.getEventTime();
 			if (bucketTime < targetTime) {
 				continue;

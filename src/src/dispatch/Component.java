@@ -1,12 +1,10 @@
-package framework;
+package dispatch;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
-
-import dispatch.Dispatcher;
 
 public abstract class Component {
 	

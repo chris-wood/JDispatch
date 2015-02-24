@@ -1,12 +1,9 @@
-package framework;
+package dispatch;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import dispatch.EventPacket;
-import dispatch.TimeBucket;
 
 public class Channel {
 	

@@ -3,9 +3,7 @@ package dispatch;
 import java.util.ArrayList;
 import java.util.List;
 
-import framework.Channel;
-import framework.Component;
-import framework.Event;
+import dispatch.scheduler.Scheduler;
 
 public class Dispatcher {
 	
