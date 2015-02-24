@@ -25,30 +25,6 @@ public class Channel {
 		return interfaceIdentity;
 	}
 	
-//	private void processScheduledEvents(long currentTime) {
-//		for (TimeBucket<Event> bucket : timeBuckets) {
-//			if (bucket.getEventTime() < currentTime) {
-//				continue;
-//			} else if (bucket.getEventTime() == currentTime) {
-//				writeEventsFromBucket(bucket);
-//				break;
-//			} else {
-//				break;
-//			}
-//		}
-//	}
-//	
-//	public void writeEventsFromBucket(TimeBucket<Event> bucket) {
-//		while (bucket.hasNext()) {
-//			Event event = bucket.pop();
-//			write(event);
-//		}
-//	}
-//	
-//	public void cycle(long currentTime) {
-//		processScheduledEvents(currentTime);
-//	}
-	
 	public void connect(Channel connection) {
 		connection.outputChannel = inputChannel;
 		connection.inputChannel = outputChannel;
@@ -57,10 +33,6 @@ public class Channel {
 	}
 	
 	public void write(Event event) {
-		outputChannel.add(event);
-	}
-	
-	public void delayedWrite(int delay, Event event) {
 		outputChannel.add(event);
 	}
 

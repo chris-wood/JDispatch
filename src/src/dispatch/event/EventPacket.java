@@ -1,6 +1,5 @@
 package dispatch.event;
 
-
 public class EventPacket {
 	
 	private Event event;

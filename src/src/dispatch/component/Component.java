@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 import dispatch.Dispatcher;
 import dispatch.channel.Channel;
 import dispatch.event.Event;
+import dispatch.event.EventPacket;
 
 public abstract class Component {
 	
@@ -81,7 +82,7 @@ public abstract class Component {
 	public boolean broadcast(Event event) {
 		boolean result = true;
 		for (String channelId : channelInterfaces.keySet()) {
-			result = result && send(channelId, event);
+			result = result && writeEventToChannel(channelId, event);
 		}
 		return result;
 	}
@@ -90,23 +91,28 @@ public abstract class Component {
 		boolean result = true;
 		for (String channelId : channelInterfaces.keySet()) {
 			if (!channelId.equals(arrivalInterface)) {
-				result = result && send(channelId, event);
+				result = result && writeEventToChannel(channelId, event);
 			}
 		}
 		return result;
 	}
 	
-	public boolean send(String queueKey, Event event) {
+	public boolean writeEventToChannel(String queueKey, Event event) {
+		return writeEventToChannel(queueKey, event, 0);
+	}
+	
+	public boolean writeEventToChannel(String queueKey, Event event, long delay) {
 		if (!channelInterfaces.containsKey(queueKey)) {
 			LOGGER.log(Level.WARNING, "Error: " + this.identity + " output queue key: " + queueKey + " not found");
 			return false;
 		} else {
-			dispatcher.scheduleEventForNextEpoch(event, identity, queueKey);
+			EventPacket packet = new EventPacket(event, identity, queueKey);
+			dispatcher.scheduleEventWithDelay(packet, delay);
 			return true;
 		}
 	}
 	
-	public boolean injectEvent(String queueKey, Event event) {
+	public boolean inject(String queueKey, Event event) {
 		if (!channelInterfaces.containsKey(queueKey)) {
 			LOGGER.log(Level.WARNING, "Error: " + this.identity + " output queue key: " + queueKey + " not found");
 			return false;
