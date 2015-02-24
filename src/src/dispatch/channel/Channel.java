@@ -6,23 +6,22 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import dispatch.event.Event;
-import dispatch.scheduler.TimeBucket;
 
 public class Channel {
 	
-	private String interfaceIdentity;
+	private String identity;
 	
 	private List<Event> outputChannel;
 	private List<Event> inputChannel;
 	
 	public Channel(String identity) {
-		this.interfaceIdentity = identity;
+		this.identity = identity;
 		this.outputChannel = new ArrayList<Event>();
 		this.inputChannel = new ArrayList<Event>();
 	}
 	
 	public String getIdentity() {
-		return interfaceIdentity;
+		return identity;
 	}
 	
 	public void connect(Channel connection) {
@@ -45,6 +44,6 @@ public class Channel {
 	
 	@Override
 	public String toString() {
-		return interfaceIdentity;
+		return identity;
 	}
 }

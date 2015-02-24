@@ -51,15 +51,15 @@ public abstract class Component {
 		}
 	}
 	
+	protected abstract void processInputEventFromInterface(String interfaceId, Event event, long time);
+	protected abstract void runComponent(long time);
+	
 	protected void processInputEvents(long time) {
 		for (String queueKey : channelInterfaces.keySet()) {
 			Stream<Event> eventStream = channelInterfaces.get(queueKey).getInputStream();
 			eventStream.forEach(e -> processInputEventFromInterface(queueKey, e, time));
 		}
 	}
-	
-	protected abstract void processInputEventFromInterface(String interfaceId, Event event, long time);
-	protected abstract void runComponent(long time);
 	
 	public void cycle(long currentTime) {
 		processInputEvents(currentTime);
@@ -82,7 +82,7 @@ public abstract class Component {
 	public boolean broadcast(Event event) {
 		boolean result = true;
 		for (String channelId : channelInterfaces.keySet()) {
-			result = result && writeEventToChannel(channelId, event);
+			result = result && send(channelId, event);
 		}
 		return result;
 	}
@@ -91,23 +91,23 @@ public abstract class Component {
 		boolean result = true;
 		for (String channelId : channelInterfaces.keySet()) {
 			if (!channelId.equals(arrivalInterface)) {
-				result = result && writeEventToChannel(channelId, event);
+				result = result && send(channelId, event);
 			}
 		}
 		return result;
 	}
 	
-	public boolean writeEventToChannel(String queueKey, Event event) {
-		return writeEventToChannel(queueKey, event, 0);
+	public boolean send(String queueKey, Event event) {
+		return send(queueKey, event, 0);
 	}
 	
-	public boolean writeEventToChannel(String queueKey, Event event, long delay) {
+	public boolean send(String queueKey, Event event, long delay) {
 		if (!channelInterfaces.containsKey(queueKey)) {
 			LOGGER.log(Level.WARNING, "Error: " + this.identity + " output queue key: " + queueKey + " not found");
 			return false;
 		} else {
-			EventPacket packet = new EventPacket(event, identity, queueKey);
-			dispatcher.scheduleEventWithDelay(packet, delay);
+//			EventPacket packet = new EventPacket(event, identity, queueKey);
+//			dispatcher.scheduleEventWithDelay(packet, delay);
 			return true;
 		}
 	}
@@ -117,7 +117,7 @@ public abstract class Component {
 			LOGGER.log(Level.WARNING, "Error: " + this.identity + " output queue key: " + queueKey + " not found");
 			return false;
 		} else {
-			channelInterfaces.get(queueKey).write(event);
+//			channelInterfaces.get(queueKey).write(event);
 			return true;
 		}
 	}
