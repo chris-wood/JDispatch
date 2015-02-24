@@ -1,8 +1,8 @@
-package test;
+package dispatch.test;
 
-import dispatch.Component;
 import dispatch.Dispatcher;
-import dispatch.Event;
+import dispatch.component.Component;
+import dispatch.event.Event;
 
 class ConsumerComponent extends Component {
 

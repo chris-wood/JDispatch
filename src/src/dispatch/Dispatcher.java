@@ -3,22 +3,31 @@ package dispatch;
 import java.util.ArrayList;
 import java.util.List;
 
+import dispatch.channel.Channel;
+import dispatch.component.Component;
+import dispatch.event.Event;
+import dispatch.event.EventPacket;
 import dispatch.scheduler.Scheduler;
+import dispatch.scheduler.TimeBucket;
 
 public class Dispatcher {
 	
 	private Clock clock;
-	private List<Channel> channels;
+	
+//	private List<TimeBucket<EventPacket>> timeBuckets;
+	
 	private List<Component> components;
-	private List<TimeBucket<EventPacket>> timeBuckets;
-	private Scheduler scheduler;
+	private Scheduler<EventPacket> componentScheduler;
+	
+	private List<Channel> channels;
+	private Scheduler<Event> channelScheduler;
 	
 	public Dispatcher(long time) {
 		this.clock = new Clock(time);
 		this.channels = new ArrayList<Channel>();
 		this.components = new ArrayList<Component>();
-		this.timeBuckets = new ArrayList<TimeBucket<EventPacket>>();
-		this.scheduler = new Scheduler(this);
+		this.componentScheduler = new Scheduler<EventPacket>();
+		this.channelScheduler = new Scheduler<Event>();
 	}
 	
 	public void addComponent(Component component) {
@@ -33,10 +42,8 @@ public class Dispatcher {
 		}
 	}
 	
-	public void forwardScheduledEventsInBucket(TimeBucket<EventPacket> bucket) {
-		while (bucket.hasNext()) {
-			EventPacket packet = bucket.pop();
-			
+	public void forwardScheduledEventsInBucket(List<EventPacket> packets) {
+		for (EventPacket packet : packets) {
 			Event event = packet.getEvent();
 			String destination = packet.getDestination();
 			String queue = packet.getQueue();
@@ -50,42 +57,44 @@ public class Dispatcher {
 		}
 	}
 	
-	private void processScheduledEvents(long currentTime) {
-		for (TimeBucket<EventPacket> bucket : timeBuckets) {
-			if (bucket.getEventTime() < currentTime) {
-				continue;
-			} else if (bucket.getEventTime() == currentTime) {
-				forwardScheduledEventsInBucket(bucket);
-				break;
-			} else {
-				break;
-			}
-		}
+	public void injectChannelMessages(List<Event> events) {
+		// TODO
 	}
 	
+//	private void processScheduledEvents(long currentTime) {
+//		for (TimeBucket<EventPacket> bucket : timeBuckets) {
+//			if (bucket.getEventTime() < currentTime) {
+//				continue;
+//			} else if (bucket.getEventTime() == currentTime) {
+//				forwardScheduledEventsInBucket(bucket);
+//				break;
+//			} else {
+//				break;
+//			}
+//		}
+//	}
+	
 	public void cycleComponents(long currentTime) {
-		processScheduledEvents(currentTime);
+		forwardScheduledEventsInBucket(componentScheduler.getScheduledCollection(currentTime));
 		for (Component component : components) {
 			component.cycle(currentTime);
 		}
 	}
 	
 	public void cycleChannels(long currentTime) {
-		for (Channel channel : channels) {
-			channel.cycle(currentTime);
-		}
+		injectChannelMessages(channelScheduler.getScheduledCollection(currentTime));
 	}
 	
-	public void addTimeBucket(TimeBucket<EventPacket> bucket) {
-		timeBuckets.add(bucket);
-	}
-	
-	public List<TimeBucket<EventPacket>> getTimeBuckets() {
-		return timeBuckets;
-	}
+//	public void addTimeBucket(TimeBucket<EventPacket> bucket) {
+//		timeBuckets.add(bucket);
+//	}
+//	
+//	public List<TimeBucket<EventPacket>> getTimeBuckets() {
+//		return timeBuckets;
+//	}
 	
 	public void scheduleEventForNextEpoch(Event event, String destination, String queueId) {
-		scheduler.scheduleDeterministicEventPacket(clock.getTime() + 1, new EventPacket(event, destination, queueId));
+		componentScheduler.scheduleDeterministicEventPacket(clock.getTime() + 1, new EventPacket(event, destination, queueId));
 	}
 	
 	public void beginEpoch() {

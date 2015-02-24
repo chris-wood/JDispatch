@@ -1,10 +1,14 @@
-package dispatch;
+package dispatch.component;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
+
+import dispatch.Dispatcher;
+import dispatch.channel.Channel;
+import dispatch.event.Event;
 
 public abstract class Component {
 	

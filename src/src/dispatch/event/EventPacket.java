@@ -1,4 +1,4 @@
-package dispatch;
+package dispatch.event;
 
 
 public class EventPacket {

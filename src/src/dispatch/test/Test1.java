@@ -1,7 +1,7 @@
-package test;
+package dispatch.test;
 
-import dispatch.Channel;
 import dispatch.Dispatcher;
+import dispatch.channel.Channel;
 
 public class Test1 {
 	

@@ -1,4 +1,4 @@
-package math;
+package dispatch.math;
 
 import java.util.Random;
 

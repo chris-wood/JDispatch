@@ -1,4 +1,4 @@
-package math;
+package dispatch.math;
 
 public abstract class Distribution {
 	

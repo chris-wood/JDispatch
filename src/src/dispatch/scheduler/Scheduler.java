@@ -1,32 +1,40 @@
 package dispatch.scheduler;
 
-import dispatch.Dispatcher;
-import dispatch.EventPacket;
-import dispatch.TimeBucket;
-import math.Distribution;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-public class Scheduler {
+import dispatch.math.Distribution;
+
+public class Scheduler<T> {
 	
-	private Dispatcher dispatcher;
+//	private Dispatcher dispatcher;
+	private List<TimeBucket<T>> timeBuckets;
 	
-	public Scheduler(Dispatcher dispatcher) {
-		this.dispatcher = dispatcher;
+	public Scheduler() {
+//		this.dispatcher = dispatcher;
+		this.timeBuckets = new ArrayList<TimeBucket<T>>();
 	}
 
-	private TimeBucket<EventPacket> addNewTimeBucket(long time) {
-		TimeBucket<EventPacket> bucket = new TimeBucket<EventPacket>(time);
-		dispatcher.addTimeBucket(bucket);
+	private TimeBucket<T> addNewTimeBucket(long time) {
+		TimeBucket<T> bucket = new TimeBucket<T>(time);
+		timeBuckets.add(bucket);
+//		dispatcher.addTimeBucket(bucket);
 		return bucket;
 	}
 	
-	public void scheduleProbabilisticEventPacket(long currentTime, Distribution distribution, EventPacket packet) {
+//	public List<TimeBucket<T>> getTimeBuckets() {
+//		return timeBuckets;
+//	}
+	
+	public void scheduleProbabilisticEventPacket(long currentTime, Distribution distribution, T packet) {
 		long targetTime = currentTime + distribution.sample();
 		scheduleDeterministicEventPacket(targetTime, packet);
 	}
 	
-	public void scheduleDeterministicEventPacket(long targetTime, EventPacket packet) {
+	public void scheduleDeterministicEventPacket(long targetTime, T packet) {
 		boolean bucketMissing = true;
-		for (TimeBucket<EventPacket> bucket : dispatcher.getTimeBuckets()) {
+		for (TimeBucket<T> bucket : timeBuckets) {
 			long bucketTime = bucket.getEventTime();
 			if (bucketTime < targetTime) {
 				continue;
@@ -41,5 +49,14 @@ public class Scheduler {
 		if (bucketMissing) {
 			addNewTimeBucket(targetTime).addEvent(packet);
 		}
+	}
+	
+	public List<T> getScheduledCollection(long targetTime) {
+		for (TimeBucket<T> bucket : timeBuckets) {
+			if (bucket.getEventTime() == targetTime) {
+				return bucket.getContents();
+			}
+		}
+		return Collections.emptyList();
 	}
 }
