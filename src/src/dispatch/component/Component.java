@@ -8,15 +8,17 @@ import java.util.stream.Stream;
 
 import dispatch.Dispatcher;
 import dispatch.channel.Channel;
+import dispatch.channel.ChannelInterface;
 import dispatch.event.Event;
-import dispatch.event.EventPacket;
 
 public abstract class Component {
 	
 	private int sleepTimer;
+	
 	protected String identity;
 	protected Dispatcher dispatcher;
-	protected Map<String, Channel> channelInterfaces;
+	protected Map<String, ChannelInterface> channelInterfaces;
+	
 	private final static Logger LOGGER = Logger.getLogger(Component.class.getName());
 	
 	public Component(String componentIdentity) {
@@ -30,7 +32,7 @@ public abstract class Component {
 	
 	private void initialize(String componentIdentity) {
 		identity = componentIdentity;
-		channelInterfaces = new HashMap<String, Channel>();
+		channelInterfaces = new HashMap<String, ChannelInterface>();
 		sleepTimer = 0;
 	}
 	
@@ -43,7 +45,7 @@ public abstract class Component {
 		return identity;
 	}
 	
-	public Channel getChannelByName(String name) {
+	public ChannelInterface getChannelInterfaceByName(String name) {
 		if (channelInterfaces.containsKey(name)) {
 			return channelInterfaces.get(name);
 		} else {
@@ -56,7 +58,7 @@ public abstract class Component {
 	
 	protected void processInputEvents(long time) {
 		for (String queueKey : channelInterfaces.keySet()) {
-			Stream<Event> eventStream = channelInterfaces.get(queueKey).getInputStream();
+			Stream<Event> eventStream = channelInterfaces.get(queueKey).read();
 			eventStream.forEach(e -> processInputEventFromInterface(queueKey, e, time));
 		}
 	}
@@ -75,7 +77,7 @@ public abstract class Component {
 		sleepTimer += time;
 	}
 	
-	public void addChannelInterface(String interfaceId, Channel channelInterface) {
+	public void addChannelInterface(String interfaceId, ChannelInterface channelInterface) {
 		channelInterfaces.put(interfaceId, channelInterface);
 	}
 	
@@ -106,18 +108,7 @@ public abstract class Component {
 			LOGGER.log(Level.WARNING, "Error: " + this.identity + " output queue key: " + queueKey + " not found");
 			return false;
 		} else {
-//			EventPacket packet = new EventPacket(event, identity, queueKey);
-//			dispatcher.scheduleEventWithDelay(packet, delay);
-			return true;
-		}
-	}
-	
-	public boolean inject(String queueKey, Event event) {
-		if (!channelInterfaces.containsKey(queueKey)) {
-			LOGGER.log(Level.WARNING, "Error: " + this.identity + " output queue key: " + queueKey + " not found");
-			return false;
-		} else {
-//			channelInterfaces.get(queueKey).write(event);
+			channelInterfaces.get(queueKey).write(event);
 			return true;
 		}
 	}

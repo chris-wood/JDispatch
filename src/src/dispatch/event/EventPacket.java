@@ -2,26 +2,30 @@ package dispatch.event;
 
 public class EventPacket {
 	
+	private String sourceIdentity;
 	private Event event;
-	private String destination;
-	private String queue;
+	private int time;
 	
-	public EventPacket(Event event, String destination, String queue) {
+	public EventPacket(String sourceName, Event event, int time) {
+		sourceIdentity = sourceName;
 		this.event = event;
-		this.destination = destination;
-		this.queue = queue;
+		this.time = time;
+	}
+	
+	public String getSourceIdentity() {
+		return sourceIdentity;
 	}
 	
 	public Event getEvent() {
 		return event;
 	}
 	
-	public String getDestination() {
-		return destination;
+	public int getTime() {
+		return time;
 	}
 	
-	public String getQueue() {
-		return queue;
+	public void decrementTime() {
+		time--;
 	}
 
 }
