@@ -23,24 +23,6 @@ public class TimeBucket<T> {
 		return eventTime;
 	}
 	
-//	public boolean hasNext() {
-//		return !events.isEmpty();
-//	}
-//	
-//	public T pop() {
-//		T packet = events.get(0);
-//		events.remove(0);
-//		return packet;
-//	}
-//	
-//	public T next() {
-//		return events.get(0);
-//	}
-//	
-//	public void remove() {
-//		events.remove(0);
-//	}
-	
 	public List<T> getContents() {
 		return events;
 	}

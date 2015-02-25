@@ -7,9 +7,9 @@ import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 import dispatch.Dispatcher;
-import dispatch.channel.Channel;
 import dispatch.channel.ChannelInterface;
 import dispatch.event.Event;
+import dispatch.event.FutureEvent;
 
 public abstract class Component {
 	
@@ -109,6 +109,17 @@ public abstract class Component {
 			return false;
 		} else {
 			channelInterfaces.get(queueKey).write(event);
+			return true;
+		}
+	}
+	
+	public boolean scheduleEvent(String queueKey, Event event, long delay) {
+		if (!channelInterfaces.containsKey(queueKey)) {
+			LOGGER.log(Level.WARNING, "Error: " + this.identity + " output queue key: " + queueKey + " not found");
+			return false;
+		} else {
+			FutureEvent futureEvent = new FutureEvent(identity, queueKey, event);
+			dispatcher.scheduleEvent(futureEvent, delay);
 			return true;
 		}
 	}

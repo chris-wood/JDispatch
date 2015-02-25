@@ -8,24 +8,17 @@ import dispatch.math.Distribution;
 
 public class Scheduler<T> {
 	
-//	private Dispatcher dispatcher;
 	private List<TimeBucket<T>> timeBuckets;
 	
 	public Scheduler() {
-//		this.dispatcher = dispatcher;
 		this.timeBuckets = new ArrayList<TimeBucket<T>>();
 	}
-
+	
 	private TimeBucket<T> addNewTimeBucket(long time) {
 		TimeBucket<T> bucket = new TimeBucket<T>(time);
 		timeBuckets.add(bucket);
-//		dispatcher.addTimeBucket(bucket);
 		return bucket;
 	}
-	
-//	public List<TimeBucket<T>> getTimeBuckets() {
-//		return timeBuckets;
-//	}
 	
 	public void scheduleProbabilisticEventPacket(long currentTime, Distribution distribution, T packet) {
 		long targetTime = currentTime + distribution.sample();
