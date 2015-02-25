@@ -53,7 +53,15 @@ public class Channel implements Actor {
 	}
 	
 	public void write(String source, Event event, int delay) {
-		eventPackets.add(new EventPacket(source, event, delay));
+		if (delay == 0) {
+			for (String outputInterface : outputInterfaces.keySet()) {
+				if (!source.equals(outputInterface)) {
+					outputInterfaces.get(outputInterface).receive(event);
+				}
+			}
+		} else {
+			eventPackets.add(new EventPacket(source, event, delay));
+		}
 	}
 	
 	public void write(String source, Event event) {

@@ -57,7 +57,11 @@ public class ChannelInterface implements Actor {
 	}
 	
 	public void write(Event event, int delay) {
-		transmittingPackets.add(new EventPacket(identity, event, delay));
+		if (delay == 0) {
+			outputChannel.write(identity, event);
+		} else {
+			transmittingPackets.add(new EventPacket(identity, event, delay));
+		}
 	}
 	
 	public void receive(Event event) {
