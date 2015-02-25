@@ -6,10 +6,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import dispatch.Actor;
 import dispatch.event.Event;
 import dispatch.event.EventPacket;
 
-public class Channel {
+public class Channel implements Actor {
 	
 	private String identity;
 	
@@ -56,7 +57,11 @@ public class Channel {
 	}
 	
 	public void write(String source, Event event) {
-		write(source, event, 0);
+		for (String outputInterface : outputInterfaces.keySet()) {
+			if (!source.equals(outputInterface)) {
+				outputInterfaces.get(outputInterface).receive(event);
+			}
+		}
 	}
 	
 	@Override

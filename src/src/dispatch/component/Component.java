@@ -6,12 +6,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
+import dispatch.Actor;
 import dispatch.Dispatcher;
 import dispatch.channel.ChannelInterface;
 import dispatch.event.Event;
 import dispatch.event.FutureEvent;
 
-public abstract class Component {
+public abstract class Component implements Actor {
 	
 	private int sleepTimer;
 	
@@ -38,7 +39,7 @@ public abstract class Component {
 	
 	public void setDispatcher(Dispatcher dispatcher) {
 		this.dispatcher = dispatcher;
-		dispatcher.addComponent(this);
+		dispatcher.addActor(this);
 	}
 	
 	public String getIdentity() {

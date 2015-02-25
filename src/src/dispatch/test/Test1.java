@@ -13,10 +13,12 @@ public class Test1 {
 		ProducerComponent producer = new ProducerComponent("P", dispatcher);
 		
 		Channel channel = new Channel("link1");
-		dispatcher.addChannel(channel);
+		dispatcher.addActor(channel);
 		
 		ChannelInterface consumerInterface = new ChannelInterface("C-NIC");
+		dispatcher.addActor(consumerInterface);
 		ChannelInterface producerInterface = new ChannelInterface("P-NIC");
+		dispatcher.addActor(producerInterface);
 		
 		consumerInterface.setOutputChannel(channel);
 		consumerInterface.setInputChannel(channel);
