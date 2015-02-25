@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import dispatch.Dispatcher;
 import dispatch.event.Event;
 import dispatch.event.EventPacket;
 
@@ -17,11 +16,10 @@ public class Channel {
 	private Map<String, ChannelInterface> outputInterfaces;
 	private List<EventPacket> eventPackets;
 	
-	public Channel(String identity, Dispatcher dispatcher) {
+	public Channel(String identity) {
 		this.identity = identity;
 		this.outputInterfaces = new HashMap<String, ChannelInterface>();
 		this.eventPackets = new ArrayList<EventPacket>();
-		dispatcher.addChannel(this);
 	}
 	
 	public String getIdentity() {
@@ -37,12 +35,12 @@ public class Channel {
 		while (iterator.hasNext()) {
 			EventPacket packet = iterator.next();
 			if (packet.getTime() == 0) {
-				iterator.remove();
 				for (String outputInterface : outputInterfaces.keySet()) {
 					if (!packet.getSourceIdentity().equals(outputInterface)) {
 						outputInterfaces.get(outputInterface).receive(packet.getEvent());
 					}
 				}
+				iterator.remove();
 			} else {
 				packet.decrementTime();
 			}
@@ -53,8 +51,12 @@ public class Channel {
 		propagateEvents(currentTime);
 	}
 	
+	public void write(String source, Event event, int delay) {
+		eventPackets.add(new EventPacket(source, event, delay));
+	}
+	
 	public void write(String source, Event event) {
-		eventPackets.add(new EventPacket(source, event, 0));
+		write(source, event, 0);
 	}
 	
 	@Override
