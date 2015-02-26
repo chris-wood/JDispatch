@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>JEvent by chris-wood</title>
+    <title>JDispatch by chris-wood</title>
 
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/pygment_trac.css">
@@ -15,20 +15,56 @@
   <body>
     <div class="wrapper">
       <header>
-        <h1>JEvent</h1>
-        <p>Name-based discrete event dispatcher and queue manager </p>
+        <h1>JDispatch</h1>
+        <p>Discrete-time event manager and dispatcher for name-based event-driven actors</p>
 
-        <p class="view"><a href="https://github.com/chris-wood/JEvent">View the Project on GitHub <small>chris-wood/JEvent</small></a></p>
+        <p class="view"><a href="https://github.com/chris-wood/JDispatch">View the Project on GitHub <small>chris-wood/JEvent</small></a></p>
 
         <ul>
-          <li><a href="https://github.com/chris-wood/JEvent/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/chris-wood/JEvent/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/chris-wood/JEvent">View On <strong>GitHub</strong></a></li>
+          <li><a href="https://github.com/chris-wood/JDispatch/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/chris-wood/JDispatch/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/chris-wood/JDispatch">View On <strong>GitHub</strong></a></li>
         </ul>
       </header>
       <section>
+
+      <h1 class="centered">Overview</h1>
+      
+      <p>
+      JDispatch is an Akka-like framework for developing discrete-time simulations in which independent and named actors interact with each other using events. The programming model is similar to and inspired by <a href="akka.io">Akka</a>. The main goal of JDispatch is to empower applications to <i>model</i> systems where living components send and receive arbitary events to other components. 
+      </p>
+
+      <p>
+      At the core of JDispatch is, obviously, the dispatcher. This module is responsible for driving the life cycle of all components in the system. The dispatcher cycles through each component in a round-robin fashion, invoking each one's main lifecycle events upon every iteration. The details of these lifecycle events are below. It is also responsible for managing event flow between components. The dispatcher is itself a <i>mediator</i> between components used to manage the flow and arrival time of events. 
+      </p>
+
+      <p>
+      There are three main entities in JDispatch under control by the dispatcher: <b>components</b>, <b>channels</b>, and <b>channel interfaces</b>. Events are passed from components through channels, which receive and emit events through channel interfaces. The importance of each of these entities are elaborated upon below.
+      <ul>
+        <li>
+          <b>Components</b>
+          <p>
+          Components are the actors in the programming model. They are similar to threads in that they have their own state and execution environment. Each component has a unique identifier to distinguish it from other components in the system. Each component also has a set of named channel interfaces through which events (e.g., messages) can be sent to other components. 
+          </p>
+          <p>
+          Events are <i>destination-agnostic</i>. The topology of components determines which components will receive an event. This places the behavior of the channel in the manner in which the topology is configured. That is, point-to-point channels emulate, for example, direct ethernet connections between two components, whereas n-to-m channels may emulate broadcast-like wireless links. 
+          </p>
+          <p>
+          Each component has to implement two primary functions: (1) an input event handler and (2) main run function. At every iteration, all newly received events are sent to this event handler by the dispatcher, and then the component's main run function is invoked. 
+          </p>
+        </li>
+        <li>
+          <b>Channels</b>: Channels model n-to-m communication links and serve to propagate events from input sources to all output sources. Each channel has a main run function, just like components, that is invoked upon every epoch iteration by the dispatcher. The purpose of this function is to propagate events through the channel. For example, different channels may have different propagation delays, and so the channel encapsulates the logic necessary to handle these differences.
+        </li>
+        <li>
+          <b>Channel Interfaces</b>: as the name implies, channel interfaces connect components to channels. Each interface has a name that is tied to the connected component. This enables components to specify to what channel an event should be sent. 
+        </li>
+      </ul>
+
+      <h1 class="centered">Sample Programs</h1>
       
 
+      </p>
       
 <!--<pre><code>$ cd your_repo_root/repo_name-->
 <!--$ git fetch origin>-->
