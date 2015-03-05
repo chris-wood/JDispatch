@@ -3,8 +3,6 @@ package dispatch.scheduler;
 import java.util.ArrayList;
 import java.util.List;
 
-import dispatch.event.EventPacket;
-
 public class TimeBucket<T> {
 
 	private long eventTime;

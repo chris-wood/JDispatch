@@ -69,7 +69,6 @@ public class ChannelInterface implements Actor {
 	}
 	
 	public Stream<Event> read() {
-//		List<Event> events = inputBuffer.stream().filter(e -> !e.isProcessed()).collect(Collectors.toList());
 		List<Event> events = inputBuffer.stream().collect(Collectors.toList());
 		inputBuffer.clear();
 		return events.stream();
